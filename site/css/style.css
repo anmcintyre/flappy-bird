@@ -1,0 +1,11 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+canvas#main-canvas {
+    width: 90%;
+    height: 90%;
+    border: 1px solid gray;
+}
