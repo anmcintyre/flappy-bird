@@ -68,11 +68,18 @@ div#overlay{
 	position: absolute;
 	z-index: 1;
 	top: 0;  
+    border: none;
 }
 
 div#startDiv{
-    width: 20em;
-    margin: 0 auto;     
+    width: 6em;
+    margin: 0 auto;  
+    input{
+        margin-bottom: 10px;
+    }   
+    button{
+        margin-top: 10px;
+    }
 }
 
 footer{

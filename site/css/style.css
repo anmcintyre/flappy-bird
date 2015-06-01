@@ -52,11 +52,16 @@ canvas#main-canvas, div#overlay {
 div#overlay {
   position: absolute;
   z-index: 1;
-  top: 0; }
+  top: 0;
+  border: none; }
 
 div#startDiv {
-  width: 20em;
+  width: 6em;
   margin: 0 auto; }
+  div#startDiv input {
+    margin-bottom: 10px; }
+  div#startDiv button {
+    margin-top: 10px; }
 
 footer {
   text-align: center;
