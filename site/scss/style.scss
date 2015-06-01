@@ -1,0 +1,90 @@
+$font-color: darken(#71C5CF, 25);
+$background-color: lighten(#DCF7E8, 5);
+$dark-background-color: darken(#71C5CF, 25);
+$nav-color: lighten(#EBFCDC, 10);
+$sans-serif-font: 'Ubuntu', sans-serif;
+
+* {
+   -ms-user-select: none; /* IE 10+ */
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   user-select: none;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    color: $font-color;
+    background-color: $background-color;
+    font-family: $sans-serif-font;
+    margin: 0;   
+    -webkit-tap-highlight-color:transparent; 
+}
+
+nav{
+    width: 100%;
+    background-color: $dark-background-color;
+    text-align: center;
+    margin: 0;
+    ul{
+        margin-top: 0;
+        list-style: none;
+        text-align: center;
+        padding-left: 0px;
+    }
+    li{   
+        display: inline-block;
+        padding: 1em;
+        @media screen and (max-width: 350px){
+            padding: 1em 0.5em;
+        }
+    }
+    a{
+        color: $nav-color;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+    } 
+
+}
+
+header{
+    text-align: center;
+}
+
+h1{
+    font-size: 1.5em;
+}
+
+canvas#main-canvas, div#overlay {
+    width: 90%;
+    border: 1px solid gray;
+    margin-left: 5%;
+}
+
+div#overlay{
+	position: absolute;
+	z-index: 1;
+	top: 0;   
+}
+
+footer{
+    text-align: center;
+    background-color: $dark-background-color;
+    color: $nav-color;
+    overflow: auto;
+    .icons {
+        list-style: none;
+        margin-top: 1em;
+        li{
+            display: inline-block;
+            padding: 1em;
+        }
+    }
+    p {
+        font-size: smaller;
+        margin-bottom: 2em;
+    }
+}
