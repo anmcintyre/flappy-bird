@@ -211,7 +211,7 @@ var Pipe = function(size){
   var physics = new physicsComponent.PhysicsComponent(this);
   physics.position.x = 1;
   physics.acceleration.x = 0;
-  physics.velocity.x = -0.75;
+  physics.velocity.x = -0.55;
 
   var graphics = new graphicsComponent.PipeGraphicsComponent(this);
   var collision = new collisionComponent.RectCollisionComponent(this, size);
@@ -237,7 +237,6 @@ var pipe = require('./entities/pipe');
 
 var FlappyBird = function() {
     this.entities = [new bird.Bird()];
-    setInterval(this.addPipes.bind(undefined, this.entities), 2000);
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
@@ -247,12 +246,13 @@ FlappyBird.prototype.run = function() {
     this.graphics.run();
     this.physics.run();
     this.input.run();
+    this.gapSize = Number($("input[name=gapSize]:checked").val());
+    setInterval(this.addPipes.bind(this), 2000);    
 };
 
-FlappyBird.prototype.addPipes = function(entities){
-    var maxY = 0.90;
+FlappyBird.prototype.addPipes = function(){
+    var maxY = 0.40;
     var minY = 0.10;
-    var gapSize = 0.50;
     var gapPosition = Math.random() * (maxY-minY) + minY;
     var bottomSize = {
         x: 0,
@@ -262,11 +262,11 @@ FlappyBird.prototype.addPipes = function(entities){
     }
     var topSize = {
         x: 0,
-        y: gapPosition+gapSize,
+        y: gapPosition+this.gapSize,
         width: 0.15,        
-        height: 1-(gapSize+gapPosition)     
+        height: 1-(this.gapSize+gapPosition)     
     }
-    entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
+    this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
 }
 
 exports.FlappyBird = FlappyBird;
@@ -362,11 +362,12 @@ var InputSystem = function(entities) {
 };
 
 InputSystem.prototype.run = function() {
-    this.canvas.addEventListener('click', this.onClick.bind(this));
-    this.canvas.addEventListener('touchstart', this.onClick.bind(this));
+	$("div#overlay").click(this.onClick.bind(this));
+    //this.canvas.addEventListener('click', this.onClick.bind(this));
+    //this.canvas.addEventListener('touchstart', this.onClick.bind(this));
 };
 
-InputSystem.prototype.onClick = function() {
+InputSystem.prototype.onClick = function(event) {	
     var bird = this.entities[0];
     bird.components.physics.velocity.y = 0.7;
 };
@@ -403,8 +404,16 @@ exports.PhysicsSystem = PhysicsSystem;
 var flappyBird = require('./flappy_bird');
 
 document.addEventListener('DOMContentLoaded', function() {
+	var height = $(window).height()-$("nav").height() - $("header").height() - $("footer").height() - 38;
+	$("canvas").css("height", height);
+	$("div#overlay").css("height", height);
+	$("div#overlay").css("top", $("canvas").position().top);
     var app = new flappyBird.FlappyBird();
-    app.run();
+
+    $("#start").click(function(){
+    	$("#startDiv").hide();
+    	app.run();
+    });
 });
 
 },{"./flappy_bird":8}]},{},[13]);

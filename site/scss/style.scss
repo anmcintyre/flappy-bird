@@ -67,7 +67,12 @@ canvas#main-canvas, div#overlay {
 div#overlay{
 	position: absolute;
 	z-index: 1;
-	top: 0;   
+	top: 0;  
+}
+
+div#startDiv{
+    width: 20em;
+    margin: 0 auto;     
 }
 
 footer{

@@ -7,7 +7,6 @@ var pipe = require('./entities/pipe');
 
 var FlappyBird = function() {
     this.entities = [new bird.Bird()];
-    setInterval(this.addPipes.bind(undefined, this.entities), 2000);
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
@@ -17,12 +16,13 @@ FlappyBird.prototype.run = function() {
     this.graphics.run();
     this.physics.run();
     this.input.run();
+    this.gapSize = Number($("input[name=gapSize]:checked").val());
+    setInterval(this.addPipes.bind(this), 2000);    
 };
 
-FlappyBird.prototype.addPipes = function(entities){
-    var maxY = 0.90;
+FlappyBird.prototype.addPipes = function(){
+    var maxY = 0.40;
     var minY = 0.10;
-    var gapSize = 0.50;
     var gapPosition = Math.random() * (maxY-minY) + minY;
     var bottomSize = {
         x: 0,
@@ -32,11 +32,11 @@ FlappyBird.prototype.addPipes = function(entities){
     }
     var topSize = {
         x: 0,
-        y: gapPosition+gapSize,
+        y: gapPosition+this.gapSize,
         width: 0.15,        
-        height: 1-(gapSize+gapPosition)     
+        height: 1-(this.gapSize+gapPosition)     
     }
-    entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
+    this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
 }
 
 exports.FlappyBird = FlappyBird;

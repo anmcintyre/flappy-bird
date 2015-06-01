@@ -7,7 +7,7 @@ var Pipe = function(size){
   var physics = new physicsComponent.PhysicsComponent(this);
   physics.position.x = 1;
   physics.acceleration.x = 0;
-  physics.velocity.x = -0.75;
+  physics.velocity.x = -0.55;
 
   var graphics = new graphicsComponent.PipeGraphicsComponent(this);
   var collision = new collisionComponent.RectCollisionComponent(this, size);

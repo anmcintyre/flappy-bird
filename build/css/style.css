@@ -1,11 +1,74 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
+* {
+  -ms-user-select: none;
+  /* IE 10+ */
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none; }
 
-canvas#main-canvas {
-    width: 90%;
-    height: 90%;
-    border: 1px solid gray;
-}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  color: #318690;
+  background-color: #f1fcf6;
+  font-family: "Ubuntu", sans-serif;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent; }
+
+nav {
+  width: 100%;
+  background-color: #318690;
+  text-align: center;
+  margin: 0; }
+  nav ul {
+    margin-top: 0;
+    list-style: none;
+    text-align: center;
+    padding-left: 0px; }
+  nav li {
+    display: inline-block;
+    padding: 1em; }
+    @media screen and (max-width: 350px) {
+      nav li {
+        padding: 1em 0.5em; } }
+  nav a {
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold; }
+
+header {
+  text-align: center; }
+
+h1 {
+  font-size: 1.5em; }
+
+canvas#main-canvas, div#overlay {
+  width: 90%;
+  border: 1px solid gray;
+  margin-left: 5%; }
+
+div#overlay {
+  position: absolute;
+  z-index: 1;
+  top: 0; }
+
+div#startDiv {
+  width: 20em;
+  margin: 0 auto; }
+
+footer {
+  text-align: center;
+  background-color: #318690;
+  color: white;
+  overflow: auto; }
+  footer .icons {
+    list-style: none;
+    margin-top: 1em; }
+    footer .icons li {
+      display: inline-block;
+      padding: 1em; }
+  footer p {
+    font-size: smaller;
+    margin-bottom: 2em; }
