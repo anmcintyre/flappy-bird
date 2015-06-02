@@ -8,6 +8,7 @@ var Pipe = function(size){
   physics.position.x = 1;
   physics.acceleration.x = 0;
   physics.velocity.x = -0.55;
+  this.type = "Pipe";
 
   var graphics = new graphicsComponent.PipeGraphicsComponent(this);
   var collision = new collisionComponent.RectCollisionComponent(this, size);
@@ -19,6 +20,10 @@ var Pipe = function(size){
     collision: collision,
     size: size
   };
+}
+
+Pipe.prototype.clearOnRestart = function(entity){
+  return true;
 }
 
 

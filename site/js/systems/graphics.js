@@ -8,7 +8,12 @@ var GraphicsSystem = function(entities) {
 
 GraphicsSystem.prototype.run = function() {
     // Run the render loop
-    window.requestAnimationFrame(this.tick.bind(this));
+    this.animationRequestId = window.requestAnimationFrame(this.tick.bind(this));
+};
+
+GraphicsSystem.prototype.stop = function() {
+    // Stop the render loop
+    window.cancelAnimationFrame(this.animationRequestId);
 };
 
 GraphicsSystem.prototype.tick = function() {
@@ -31,7 +36,7 @@ GraphicsSystem.prototype.tick = function() {
     // Rendering goes here
     for (var i=0; i<this.entities.length; i++) {
         var entity = this.entities[i];
-        if (!'graphics' in entity.components) {
+        if (!('graphics' in entity.components)) {
             continue;
         }
 

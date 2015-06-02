@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     $("#start").click(function(){
     	$("#startDiv").hide();
-    	app.run();
+    	$("#aboutToStartDiv").show();
+    	$.data("div#overlay", "app", app);
+		$("div#overlay").bind("click.start", app.run.bind(app));
     });
 });

@@ -25,15 +25,15 @@ RectCollisionComponent.prototype.collideRect = function(entity) {
     var sizeA = this.size;
     var sizeB = entity.components.collision.size;
 
-    var leftA = positionA.x - sizeA.x / 2;
-    var rightA = positionA.x + sizeA.x / 2;
-    var bottomA = positionA.y - sizeA.y / 2;
-    var topA = positionA.y + sizeA.y / 2;
+    var leftA = positionA.x + sizeA.x ;
+    var rightA = positionA.x + sizeA.x + sizeA.width;
+    var bottomA = positionA.y + sizeA.y;
+    var topA = positionA.y + sizeA.y + sizeA.height;
 
-    var leftB = positionB.x - sizeB.x / 2;
-    var rightB = positionB.x + sizeB.x / 2;
-    var bottomB = positionB.y - sizeB.y / 2;
-    var topB = positionB.y + sizeB.y / 2;
+    var leftB = positionB.x + sizeB.x ;
+    var rightB = positionB.x + sizeB.x  + sizeB.width;
+    var bottomB = positionB.y + sizeB.y;
+    var topB = positionB.y + sizeB.y + sizeB.height;
 
     return !(leftA > rightB || leftB > rightA ||
              bottomA > topB || bottomB > topA);

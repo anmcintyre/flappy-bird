@@ -2,12 +2,12 @@ var graphicsComponent = require("../components/graphics/bird");
 var physicsComponent = require("../components/physics/physics");
 var collisionComponent = require("../components/collision/circle");
 
-var Bird = function(){
+var Bird = function(app){
 	console.log("creating Bird entity");
     var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.y = 0.5;
     physics.acceleration.y = -2;
-
+    this.type = "Bird";
 
 	var graphics = new graphicsComponent.BirdGraphicsComponent(this);
     var collision = new collisionComponent.CircleCollisionComponent(this, 0.02);
@@ -16,16 +16,20 @@ var Bird = function(){
 	this.components = {
         physics: physics,		
 		graphics: graphics,
-		collision: collision
+		collision: collision,
+		app: app
 	};
 }
 
-Bird.prototype.onCollision = function(entity){
-	console.log("Bird collided with entity:", entity)
-	//Reset bird's position
-	this.components.physics.position.y = 0.5;
-
-	//remove current pipes
+Bird.prototype.clearOnRestart = function(entity){
+	return false;
 }
+
+Bird.prototype.onCollision = function(entity){
+	console.log("Bird collided with entity:", entity);
+	//Restart the GUI
+	this.components.app.restart(this);
+}
+
 
 exports.Bird = Bird;
