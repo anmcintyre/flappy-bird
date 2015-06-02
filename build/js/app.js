@@ -198,9 +198,13 @@ Bird.prototype.clearOnRestart = function(entity){
 }
 
 Bird.prototype.onCollision = function(entity){
-	console.log("Bird collided with entity:", entity);
-	//Restart the GUI
-	this.components.app.restart(this);
+	if (entity.type != "PipeCheck"){	
+		console.log("Bird collided with entity:", entity);
+		//Restart the GUI
+		this.components.app.restart(this);
+	} else {
+		console.log("Bird successfully cleared PipeCheck:", entity);
+	}
 }
 
 
@@ -237,6 +241,49 @@ Pipe.prototype.clearOnRestart = function(entity){
 
 exports.Pipe = Pipe;
 },{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],8:[function(require,module,exports){
+var graphicsComponent = require("../components/graphics/pipe");
+var physicsComponent = require("../components/physics/physics");
+var collisionComponent = require("../components/collision/rect");
+
+var PipeCheck = function(size, app){
+	console.log("creating PipeCheck entity");
+  var physics = new physicsComponent.PhysicsComponent(this);
+  physics.velocity.x = -0.55;
+  this.type = "PipeCheck"; 
+  this.info = app.successfulPipeCount;
+
+  var collision = new collisionComponent.RectCollisionComponent(this, size);
+  collision.onCollision = this.onCollision.bind(this);
+
+  this.components = {
+    physics: physics,		
+    collision: collision,
+    size: size,
+    entities: app.entities,
+    app: app
+  };
+}
+
+PipeCheck.prototype.clearOnRestart = function(entity){
+  return true;
+}
+
+PipeCheck.prototype.onCollision = function(entity){
+  console.log("PipeCheck collided with entity:", entity);
+
+  //Remove self
+  var i=this.components.entities.length; 
+  while ( i--){
+    if (this.components.entities[i] == this)
+      this.components.entities.splice(i, 1);
+  }
+  console.log("Remove Pipecheck");
+  $("#counter").text(++this.components.app.successfulPipeCount);
+}
+
+
+exports.PipeCheck = PipeCheck;
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],9:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
 var collisionComponent = require("../components/collision/rect");
@@ -278,7 +325,7 @@ Wall.prototype.onCollision = function(entity){
 }
 
 exports.Wall = Wall;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],9:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],10:[function(require,module,exports){
 var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
@@ -286,6 +333,7 @@ var inputSystem = require('./systems/input');
 var bird = require('./entities/bird');
 var pipe = require('./entities/pipe');
 var wall = require('./entities/wall');
+var pipeCheck = require('./entities/pipeCheck')
 
 var FlappyBird = function() {
     this.entities = [];
@@ -297,6 +345,7 @@ var FlappyBird = function() {
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
+    this.successfulPipeCount = 0;
 };
 
 FlappyBird.prototype.run = function(event) {
@@ -305,7 +354,10 @@ FlappyBird.prototype.run = function(event) {
         this.input.run();
         this.gapSize = Number($("input[name=gapSize]:checked").val());
         this.intervalID = setInterval(this.addPipes.bind(this), 2000);  
-        $("#aboutToStartDiv").hide();  
+        $("#aboutToStartDiv").hide();         
+        $("#countDiv").show();
+        this.successfulPipeCount = 0;
+        $("#counter").text("0");
     };
 
 FlappyBird.prototype.stop = function(){
@@ -314,6 +366,7 @@ FlappyBird.prototype.stop = function(){
     this.physics.stop();
     clearInterval(this.intervalID);
     $("#aboutToStartDiv").show();
+    $("#countDiv").hide();
 };
 
 FlappyBird.prototype.addPipes = function(){
@@ -333,6 +386,7 @@ FlappyBird.prototype.addPipes = function(){
         height: 1-(this.gapSize+gapPosition)     
     }
     this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
+    this.entities.push(new pipeCheck.PipeCheck({x: 1.16, y: 0, width: 0.01, height: 1}, this));
 };
 
 FlappyBird.prototype.restart = function(birdEntity){
@@ -351,7 +405,7 @@ FlappyBird.prototype.restart = function(birdEntity){
     this.stop();
 };
 exports.FlappyBird = FlappyBird;
-},{"./entities/bird":6,"./entities/pipe":7,"./entities/wall":8,"./systems/graphics":11,"./systems/input":12,"./systems/physics":13}],10:[function(require,module,exports){
+},{"./entities/bird":6,"./entities/pipe":7,"./entities/pipeCheck":8,"./entities/wall":9,"./systems/graphics":12,"./systems/input":13,"./systems/physics":14}],11:[function(require,module,exports){
 var CollisionSystem = function(entities) {
     this.entities = entities;
 };
@@ -385,7 +439,7 @@ CollisionSystem.prototype.tick = function() {
 };
 
 exports.CollisionSystem = CollisionSystem;
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var GraphicsSystem = function(entities) {
     this.entities = entities;
     // Canvas is where we draw
@@ -439,7 +493,7 @@ GraphicsSystem.prototype.tick = function() {
 };
 
 exports.GraphicsSystem = GraphicsSystem;
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var InputSystem = function(entities) {
     this.entities = entities;
 
@@ -465,7 +519,7 @@ InputSystem.prototype.stop = function(app){
 }
 
 exports.InputSystem = InputSystem;
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var collisionSystem = require("./collision");
 
 var PhysicsSystem = function(entities) {
@@ -495,7 +549,7 @@ PhysicsSystem.prototype.tick = function() {
 };
 
 exports.PhysicsSystem = PhysicsSystem;
-},{"./collision":10}],14:[function(require,module,exports){
+},{"./collision":11}],15:[function(require,module,exports){
 
 var flappyBird = require('./flappy_bird');
 
@@ -514,4 +568,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-},{"./flappy_bird":9}]},{},[14]);
+},{"./flappy_bird":10}]},{},[15]);

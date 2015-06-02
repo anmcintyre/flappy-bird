@@ -88,6 +88,12 @@ div#startDiv{
     }
 }
 
+div#countDiv{
+    width: 5em;
+    margin: 0 auto;
+    display: none;
+}
+
 footer{
     text-align: center;
     background-color: $dark-background-color;

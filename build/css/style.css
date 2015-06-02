@@ -68,6 +68,11 @@ div#startDiv {
   div#startDiv button {
     margin-top: 10px; }
 
+div#countDiv {
+  width: 5em;
+  margin: 0 auto;
+  display: none; }
+
 footer {
   text-align: center;
   background-color: #318690;

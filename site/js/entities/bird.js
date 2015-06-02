@@ -26,9 +26,13 @@ Bird.prototype.clearOnRestart = function(entity){
 }
 
 Bird.prototype.onCollision = function(entity){
-	console.log("Bird collided with entity:", entity);
-	//Restart the GUI
-	this.components.app.restart(this);
+	if (entity.type != "PipeCheck"){	
+		console.log("Bird collided with entity:", entity);
+		//Restart the GUI
+		this.components.app.restart(this);
+	} else {
+		console.log("Bird successfully cleared PipeCheck:", entity);
+	}
 }
 
 

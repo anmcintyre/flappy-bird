@@ -5,6 +5,7 @@ var inputSystem = require('./systems/input');
 var bird = require('./entities/bird');
 var pipe = require('./entities/pipe');
 var wall = require('./entities/wall');
+var pipeCheck = require('./entities/pipeCheck')
 
 var FlappyBird = function() {
     this.entities = [];
@@ -16,6 +17,7 @@ var FlappyBird = function() {
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
+    this.successfulPipeCount = 0;
 };
 
 FlappyBird.prototype.run = function(event) {
@@ -24,7 +26,10 @@ FlappyBird.prototype.run = function(event) {
         this.input.run();
         this.gapSize = Number($("input[name=gapSize]:checked").val());
         this.intervalID = setInterval(this.addPipes.bind(this), 2000);  
-        $("#aboutToStartDiv").hide();  
+        $("#aboutToStartDiv").hide();         
+        $("#countDiv").show();
+        this.successfulPipeCount = 0;
+        $("#counter").text("0");
     };
 
 FlappyBird.prototype.stop = function(){
@@ -33,6 +38,7 @@ FlappyBird.prototype.stop = function(){
     this.physics.stop();
     clearInterval(this.intervalID);
     $("#aboutToStartDiv").show();
+    $("#countDiv").hide();
 };
 
 FlappyBird.prototype.addPipes = function(){
@@ -52,6 +58,7 @@ FlappyBird.prototype.addPipes = function(){
         height: 1-(this.gapSize+gapPosition)     
     }
     this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
+    this.entities.push(new pipeCheck.PipeCheck({x: 1.16, y: 0, width: 0.01, height: 1}, this));
 };
 
 FlappyBird.prototype.restart = function(birdEntity){
