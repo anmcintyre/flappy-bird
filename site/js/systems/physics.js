@@ -17,7 +17,7 @@ PhysicsSystem.prototype.stop = function() {
 PhysicsSystem.prototype.tick = function() {
     for (var i=0; i<this.entities.length; i++) {
         var entity = this.entities[i];
-        if (!'physics' in entity.components) {
+        if (!('physics' in entity.components)) {
             continue;
         }
 

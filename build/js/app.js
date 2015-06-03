@@ -117,10 +117,86 @@ BirdGraphicsComponent.prototype.draw = function(context){
 
     context.save();
     context.translate(position.x, position.y);
+
+    //"ship"
     context.beginPath();
-    context.arc(0, 0, 0.02, 0, 2 * Math.PI);
-    context.fill();
+    context.fillStyle="black";
+    context.strokeStyle="gray"; 
+    context.lineWidth=0.001;
+    context.arc(0, 0, 0.02, 0, 2 * Math.PI);   
     context.closePath();
+    context.fill();
+    context.stroke();     
+
+    //red bird body
+    context.beginPath();
+    context.fillStyle="#318690";
+    context.strokeStyle="#318690";
+    context.lineWidth=0.008;
+    context.arc(0, 0, 0.008, 0, 2 * Math.PI);    
+    context.closePath();
+    context.fill();
+    context.stroke();    
+
+    //bird beak
+    context.beginPath();
+    context.fillStyle="yellow";
+    context.strokeStyle="#FF8F35";
+    context.lineWidth=0.001;
+    context.moveTo(.008,0.006);
+    context.lineTo(.017,0.0);
+    context.lineTo(.008,-0.006);
+    context.closePath();
+    context.fill();
+    context.stroke();   
+
+    context.beginPath();
+    context.strokeStyle="#black";
+    context.lineWidth=0.001;
+    context.moveTo(.017,0.0);
+    context.lineTo(.008,0.0);
+    context.closePath();
+    context.stroke();   
+
+
+    //eye
+   	context.beginPath();
+    context.fillStyle="white";
+    context.strokeStyle="white"; 
+    context.lineWidth=0.001;
+    context.arc(.002, 0.006, 0.003, 0, 2 * Math.PI);   
+    context.closePath();
+    context.fill();
+    context.stroke();    
+    context.closePath();
+    context.fill();
+    context.stroke(); 
+
+   	context.beginPath();
+    context.fillStyle="black";
+    context.strokeStyle="black"; 
+    context.lineWidth=0.001;
+    context.arc(.002, 0.006, 0.001, 0, 2 * Math.PI);   
+    context.closePath();
+    context.fill();
+    context.stroke();    
+    context.closePath();
+    context.fill();
+    context.stroke();     
+
+    //wing
+    context.beginPath();
+    context.fillStyle="#318690";
+    context.strokeStyle="black";
+    context.lineWidth=0.001;
+    context.moveTo(-0.006,0.01);
+    context.lineTo(0,0);
+    context.lineTo(-0.006, -0.01);
+    context.lineTo(-0.019,0);
+    context.closePath();
+    context.fill();
+    context.stroke();     
+
     context.restore();
 }
 
@@ -134,15 +210,121 @@ PipeGraphicsComponent.prototype.draw = function(context){
     var position = this.entity.components.physics.position;
     var size = this.entity.components.size;
     context.save();
-    context.translate(position.x, position.y);    
+    context.translate(position.x, position.y); 
+
+    var alienColor = "#EB994D";
+    var alienLineColor = "#F5B57A";
+
+
+    //antennae
+    context.fillStyle=alienColor;     
+    context.strokeStyle=alienLineColor;
+    context.lineWidth=0.002;
+    var radius = 0.01;
+    var midpt = {
+		x : size.x + size.width/2,
+		y : size.y + size.height/2
+    }
+    var leftAntennae = {
+    	x : size.x + radius,
+    	y : size.y+size.height - radius
+    }
+    var rightAntennae = {
+    	x: size.x + size.width - radius,
+    	y : size.y+size.height-radius
+    }
+
+    //line from Upper left "antennae" circle to midpt to Upper right "antennae" circle
     context.beginPath();
-    context.fillRect(size.x, size.y, size.width, size.height);
+    context.moveTo(leftAntennae.x, leftAntennae.y);
+    context.lineTo(midpt.x, midpt.y);
+    context.lineTo(rightAntennae.x, rightAntennae.y, radius, 0, 2 * Math.PI);
+    context.stroke();
+
+
+    //Upper left "antennae" circle
+    context.lineWidth=0.001;    
+    context.beginPath();    
+    context.arc(leftAntennae.x, leftAntennae.y, radius, 0, 2 * Math.PI); 
     context.closePath();
+    context.fill();
+
+
+    //Upper right "antennae" circle
+    context.beginPath();    
+    context.arc(rightAntennae.x, rightAntennae.y, radius, 0, 2 * Math.PI); 
+    context.closePath();
+    context.fill();
+
+
+    //body
+    context.beginPath();
+    context.fillStyle=alienColor;
+    context.strokeStyle=alienLineColor;
+    context.lineWidth=0.001;
+	context.moveTo( size.x, size.y );
+	context.quadraticCurveTo(size.x, size.y+size.height, size.x+size.width/2, size.y+size.height);
+	context.quadraticCurveTo(size.x+size.width, size.y+size.height, size.x+size.width, size.y );
+    context.closePath();
+    context.stroke();
+    context.fill();
+
+    //outer eye
+    context.fillStyle="white";
+    context.beginPath();    
+    context.arc(midpt.x, midpt.y, 0.05, 0, 2 * Math.PI); 
+    context.closePath();
+    context.fill();    
+
+    //inner eye
+    context.fillStyle=alienColor;
+    context.beginPath();    
+    context.arc(midpt.x, midpt.y, 0.03, 0, 2 * Math.PI); 
+    context.closePath();
+    context.fill();
+
+    //iris
+    context.fillStyle="black";
+    context.beginPath();    
+    context.arc(midpt.x-0.01, midpt.y+0.01, 0.01, 0, 2 * Math.PI); 
+    context.closePath();
+    context.fill();
+
+
     context.restore();
+
+
 }
 
 exports.PipeGraphicsComponent = PipeGraphicsComponent; 
 },{}],5:[function(require,module,exports){
+var StarFieldGraphicsComponent = function(entity){
+	this.entity = entity;
+};
+
+StarFieldGraphicsComponent.prototype.draw = function(context){
+	context.beginPath();
+	var star;
+	for(var i=0, j=this.entity.components.stars.length; i<j; i++) {
+		star = this.entity.components.stars[i];
+		star.x = star.x - star.vx;
+    	
+    	if(star.x < -2) {
+			star.x= 2;
+			star.y= Math.random();
+			star.vx= Math.random() / 100;
+			star.radius= Math.random()/100;
+    	}
+	    context.fillStyle = "white";
+	    context.beginPath();
+	    context.arc(star.x, star.y, star.radius, 0, Math.PI * 2, true);
+	    context.fill();	    
+	    context.closePath();
+	}
+}
+
+exports.StarFieldGraphicsComponent = StarFieldGraphicsComponent; 
+},{}],6:[function(require,module,exports){
 var PhysicsComponent = function(entity) {
     this.entity = entity;
 
@@ -169,7 +351,7 @@ PhysicsComponent.prototype.update = function(delta) {
 };
 
 exports.PhysicsComponent = PhysicsComponent;
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/bird");
 var physicsComponent = require("../components/physics/physics");
 var collisionComponent = require("../components/collision/circle");
@@ -209,7 +391,7 @@ Bird.prototype.onCollision = function(entity){
 
 
 exports.Bird = Bird;
-},{"../components/collision/circle":1,"../components/graphics/bird":3,"../components/physics/physics":5}],7:[function(require,module,exports){
+},{"../components/collision/circle":1,"../components/graphics/bird":3,"../components/physics/physics":6}],8:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
 var collisionComponent = require("../components/collision/rect");
@@ -240,7 +422,7 @@ Pipe.prototype.clearOnRestart = function(entity){
 
 
 exports.Pipe = Pipe;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],8:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":6}],9:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
 var collisionComponent = require("../components/collision/rect");
@@ -283,7 +465,38 @@ PipeCheck.prototype.onCollision = function(entity){
 
 
 exports.PipeCheck = PipeCheck;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],9:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":6}],10:[function(require,module,exports){
+var graphicsComponent = require("../components/graphics/starField");
+
+var StarField = function(app){
+	console.log("creating StarField entity");
+    this.type = "StarField";
+
+	var graphics = new graphicsComponent.StarFieldGraphicsComponent(this);
+
+	this.components = {	
+		graphics: graphics,
+		app: app,
+		stars: []
+	};
+
+	for (i=0; i<30; i++){
+		var star = {
+			x: Math.random() * 4 - 2,
+			y: Math.random(),
+			vx: Math.random()/100,
+			radius: Math.random()/100
+		}
+		this.components.stars.push(star);
+	}
+}
+
+StarField.prototype.clearOnRestart = function(entity){
+	return false;
+}
+
+exports.StarField = StarField;
+},{"../components/graphics/starField":5}],11:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
 var collisionComponent = require("../components/collision/rect");
@@ -325,7 +538,7 @@ Wall.prototype.onCollision = function(entity){
 }
 
 exports.Wall = Wall;
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],10:[function(require,module,exports){
+},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":6}],12:[function(require,module,exports){
 var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
@@ -333,11 +546,14 @@ var inputSystem = require('./systems/input');
 var bird = require('./entities/bird');
 var pipe = require('./entities/pipe');
 var wall = require('./entities/wall');
-var pipeCheck = require('./entities/pipeCheck')
+var pipeCheck = require('./entities/pipeCheck');
+var starField = require('./entities/starField');
+
 
 var FlappyBird = function() {
     this.entities = [];
     this.entities.push(new bird.Bird(this));
+    this.entities.push(new starField.StarField(this));
     this.entities.push(new wall.Wall({x:-2, y:0, width:0.05, height:1}, this)); //left side (for pipes)
     this.entities.push(new wall.Wall({x:-2, y:-0.94, width:4, height:0.05}, this)); //bottom (for birds)
     this.entities.push(new wall.Wall({x:-2, y:1.01, width:4, height:0.05}, this)); //top  (for birds)
@@ -377,14 +593,16 @@ FlappyBird.prototype.addPipes = function(){
         x: 0,
         y: 0,
         width: 0.15,
-        height: gapPosition
-    }
+        height: gapPosition,
+        position: "bottom"
+    };
     var topSize = {
         x: 0,
         y: gapPosition+this.gapSize,
         width: 0.15,        
-        height: 1-(this.gapSize+gapPosition)     
-    }
+        height: 1-(this.gapSize+gapPosition),
+        position: "top"
+    };
     this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
     this.entities.push(new pipeCheck.PipeCheck({x: 1.16, y: 0, width: 0.01, height: 1}, this));
 };
@@ -405,7 +623,7 @@ FlappyBird.prototype.restart = function(birdEntity){
     this.stop();
 };
 exports.FlappyBird = FlappyBird;
-},{"./entities/bird":6,"./entities/pipe":7,"./entities/pipeCheck":8,"./entities/wall":9,"./systems/graphics":12,"./systems/input":13,"./systems/physics":14}],11:[function(require,module,exports){
+},{"./entities/bird":7,"./entities/pipe":8,"./entities/pipeCheck":9,"./entities/starField":10,"./entities/wall":11,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16}],13:[function(require,module,exports){
 var CollisionSystem = function(entities) {
     this.entities = entities;
 };
@@ -413,13 +631,13 @@ var CollisionSystem = function(entities) {
 CollisionSystem.prototype.tick = function() {
     for (var i=0; i<this.entities.length; i++) {
         var entityA = this.entities[i];
-        if (!'collision' in entityA.components) {
+        if (!('collision' in entityA.components)) {
             continue;
         }
 
         for (var j=i+1; j<this.entities.length; j++) {
             var entityB = this.entities[j];
-            if (!'collision' in entityB.components) {
+            if (!('collision' in entityB.components)) {
                 continue;
             }
 
@@ -439,13 +657,14 @@ CollisionSystem.prototype.tick = function() {
 };
 
 exports.CollisionSystem = CollisionSystem;
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var GraphicsSystem = function(entities) {
     this.entities = entities;
     // Canvas is where we draw
     this.canvas = document.getElementById('main-canvas');
     // Context is what we draw to
     this.context = this.canvas.getContext('2d');
+    this.context.strokeStyle = "white";
 };
 
 GraphicsSystem.prototype.run = function() {
@@ -493,7 +712,7 @@ GraphicsSystem.prototype.tick = function() {
 };
 
 exports.GraphicsSystem = GraphicsSystem;
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var InputSystem = function(entities) {
     this.entities = entities;
 
@@ -519,7 +738,7 @@ InputSystem.prototype.stop = function(app){
 }
 
 exports.InputSystem = InputSystem;
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var collisionSystem = require("./collision");
 
 var PhysicsSystem = function(entities) {
@@ -539,7 +758,7 @@ PhysicsSystem.prototype.stop = function() {
 PhysicsSystem.prototype.tick = function() {
     for (var i=0; i<this.entities.length; i++) {
         var entity = this.entities[i];
-        if (!'physics' in entity.components) {
+        if (!('physics' in entity.components)) {
             continue;
         }
 
@@ -549,7 +768,7 @@ PhysicsSystem.prototype.tick = function() {
 };
 
 exports.PhysicsSystem = PhysicsSystem;
-},{"./collision":11}],15:[function(require,module,exports){
+},{"./collision":13}],17:[function(require,module,exports){
 
 var flappyBird = require('./flappy_bird');
 
@@ -568,4 +787,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-},{"./flappy_bird":10}]},{},[15]);
+},{"./flappy_bird":12}]},{},[17]);

@@ -4,6 +4,7 @@ var GraphicsSystem = function(entities) {
     this.canvas = document.getElementById('main-canvas');
     // Context is what we draw to
     this.context = this.canvas.getContext('2d');
+    this.context.strokeStyle = "white";
 };
 
 GraphicsSystem.prototype.run = function() {

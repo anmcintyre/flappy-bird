@@ -49,6 +49,9 @@ canvas#main-canvas, div#overlay {
   border: 1px solid gray;
   margin-left: 5%; }
 
+canvas {
+  background-color: black; }
+
 div#overlay {
   position: absolute;
   z-index: 1;
@@ -56,9 +59,10 @@ div#overlay {
   border: none; }
 
 div#aboutToStartDiv {
-  width: 17em;
+  width: 25em;
   margin: 10em auto;
-  display: none; }
+  display: none;
+  text-align: center; }
 
 div#startDiv {
   width: 6em;
@@ -71,7 +75,10 @@ div#startDiv {
 div#countDiv {
   width: 5em;
   margin: 0 auto;
-  display: none; }
+  display: none;
+  text-align: center;
+  border: 3px solid;
+  background-color: rgba(16, 84, 94, 0.5); }
 
 footer {
   text-align: center;
