@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $("#start").click(function(){
     	$("#startDiv").hide();
     	$("#aboutToStartDiv").show();
-    	$.data("div#overlay", "app", app);
-		$("div#overlay").bind("click.start", app.run.bind(app));
+        app.graphics.run();
+        $("div#overlay").bind("click.start", function(event){
+            if (event.target.id != "start"){
+                app.run(); 
+            }
+        });    
     });
 });

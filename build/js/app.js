@@ -561,26 +561,25 @@ var FlappyBird = function() {
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
+    this.timeToNextPipe = 2000;
     this.successfulPipeCount = 0;
 };
 
 FlappyBird.prototype.run = function(event) {
-        this.graphics.run();
-        this.physics.run();
-        this.input.run();
-        this.gapSize = Number($("input[name=gapSize]:checked").val());
-        this.intervalID = setInterval(this.addPipes.bind(this), 2000);  
-        $("#aboutToStartDiv").hide();         
-        $("#countDiv").show();
-        this.successfulPipeCount = 0;
-        $("#counter").text("0");
-    };
+    this.physics.run();
+    this.input.run();
+    this.gapSize = Number($("input[name=gapSize]:checked").val());
+    this.timeoutID = setTimeout(this.addPipes.bind(this), this.timeToNextPipe);  
+    $("#aboutToStartDiv").hide();         
+    $("#countDiv").show();
+    this.successfulPipeCount = 0;
+    $("#counter").text("0");
+};
 
 FlappyBird.prototype.stop = function(){
     this.input.stop(this);
-    this.graphics.stop();
     this.physics.stop();
-    clearInterval(this.intervalID);
+    clearTimeout(this.timeoutID);
     $("#aboutToStartDiv").show();
     $("#countDiv").hide();
 };
@@ -605,6 +604,8 @@ FlappyBird.prototype.addPipes = function(){
     };
     this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
     this.entities.push(new pipeCheck.PipeCheck({x: 1.16, y: 0, width: 0.01, height: 1}, this));
+    this.timeToNextPipe -= 20;
+    this.timeoutID = setTimeout(this.addPipes.bind(this), this.timeToNextPipe);  
 };
 
 FlappyBird.prototype.restart = function(birdEntity){
@@ -668,14 +669,10 @@ var GraphicsSystem = function(entities) {
 };
 
 GraphicsSystem.prototype.run = function() {
-    // Run the render loop
-    this.animationRequestId = window.requestAnimationFrame(this.tick.bind(this));
+    // Start the render loop
+    window.requestAnimationFrame(this.tick.bind(this));
 };
 
-GraphicsSystem.prototype.stop = function() {
-    // Stop the render loop
-    window.cancelAnimationFrame(this.animationRequestId);
-};
 
 GraphicsSystem.prototype.tick = function() {
    // Set the canvas to the correct size if the window is resized
@@ -782,8 +779,12 @@ document.addEventListener('DOMContentLoaded', function() {
     $("#start").click(function(){
     	$("#startDiv").hide();
     	$("#aboutToStartDiv").show();
-    	$.data("div#overlay", "app", app);
-		$("div#overlay").bind("click.start", app.run.bind(app));
+        app.graphics.run();
+        $("div#overlay").bind("click.start", function(event){
+            if (event.target.id != "start"){
+                app.run(); 
+            }
+        });    
     });
 });
 

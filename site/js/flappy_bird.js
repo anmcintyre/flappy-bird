@@ -20,26 +20,25 @@ var FlappyBird = function() {
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
+    this.timeToNextPipe = 2000;
     this.successfulPipeCount = 0;
 };
 
 FlappyBird.prototype.run = function(event) {
-        this.graphics.run();
-        this.physics.run();
-        this.input.run();
-        this.gapSize = Number($("input[name=gapSize]:checked").val());
-        this.intervalID = setInterval(this.addPipes.bind(this), 2000);  
-        $("#aboutToStartDiv").hide();         
-        $("#countDiv").show();
-        this.successfulPipeCount = 0;
-        $("#counter").text("0");
-    };
+    this.physics.run();
+    this.input.run();
+    this.gapSize = Number($("input[name=gapSize]:checked").val());
+    this.timeoutID = setTimeout(this.addPipes.bind(this), this.timeToNextPipe);  
+    $("#aboutToStartDiv").hide();         
+    $("#countDiv").show();
+    this.successfulPipeCount = 0;
+    $("#counter").text("0");
+};
 
 FlappyBird.prototype.stop = function(){
     this.input.stop(this);
-    this.graphics.stop();
     this.physics.stop();
-    clearInterval(this.intervalID);
+    clearTimeout(this.timeoutID);
     $("#aboutToStartDiv").show();
     $("#countDiv").hide();
 };
@@ -64,6 +63,8 @@ FlappyBird.prototype.addPipes = function(){
     };
     this.entities.push(new pipe.Pipe(bottomSize), new pipe.Pipe(topSize));
     this.entities.push(new pipeCheck.PipeCheck({x: 1.16, y: 0, width: 0.01, height: 1}, this));
+    this.timeToNextPipe -= 20;
+    this.timeoutID = setTimeout(this.addPipes.bind(this), this.timeToNextPipe);  
 };
 
 FlappyBird.prototype.restart = function(birdEntity){

@@ -8,14 +8,10 @@ var GraphicsSystem = function(entities) {
 };
 
 GraphicsSystem.prototype.run = function() {
-    // Run the render loop
-    this.animationRequestId = window.requestAnimationFrame(this.tick.bind(this));
+    // Start the render loop
+    window.requestAnimationFrame(this.tick.bind(this));
 };
 
-GraphicsSystem.prototype.stop = function() {
-    // Stop the render loop
-    window.cancelAnimationFrame(this.animationRequestId);
-};
 
 GraphicsSystem.prototype.tick = function() {
    // Set the canvas to the correct size if the window is resized
