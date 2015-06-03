@@ -1,6 +1,8 @@
 var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
+var uiSystem = require('./systems/ui');
+var scoreBoardSystem = require('./systems/scoreboard');
 
 var bird = require('./entities/bird');
 var pipe = require('./entities/pipe');
@@ -20,32 +22,32 @@ var FlappyBird = function() {
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
+    this.ui = new uiSystem.UISystem();
+    this.scoreboard = new scoreBoardSystem.ScoreBoardSystem();
+
     this.timeToNextPipe = 2000;
-    this.successfulPipeCount = 0;
+
 };
 
 FlappyBird.prototype.run = function(event) {
     this.physics.run();
     this.input.run();
+    this.scoreboard.successfulPipeCount = 0;
     this.gapSize = Number($("input[name=gapSize]:checked").val());
     this.timeoutID = setTimeout(this.addPipes.bind(this), this.timeToNextPipe);  
-    $("#aboutToStartDiv").hide();         
-    $("#countDiv").show();
-    this.successfulPipeCount = 0;
-    $("#counter").text("0");
+    this.ui.start();
 };
 
 FlappyBird.prototype.stop = function(){
     this.input.stop(this);
     this.physics.stop();
     clearTimeout(this.timeoutID);
-    $("#aboutToStartDiv").show();
-    $("#countDiv").hide();
+    this.ui.stop();
 };
 
 FlappyBird.prototype.addPipes = function(){
     var maxY = 0.40;
-    var minY = 0.10;
+    var minY = 0.20;
     var gapPosition = Math.random() * (maxY-minY) + minY;
     var bottomSize = {
         x: 0,

@@ -86,7 +86,23 @@ PipeGraphicsComponent.prototype.draw = function(context){
     context.closePath();
     context.fill();
 
+    //mouth
+    var mouth = {
+        startX : size.x + (1/3)*size.width,
+        startY : size.y + (1/4)*size.height,
+        pt1X : size.x + 4/9 * size.width,
+        pt1Y : size.y,
+        pt2X : size.x + 5/9 * size.width,
+        pt2Y : size.y,
+        endX : size.x + (2/3)*size.width,
+        endY : size.y + (1/4)*size.height,
+    }
 
+    context.strokeStyle = "black";
+    context.beginPath();
+    context.moveTo(mouth.startX, mouth.startY);
+    context.bezierCurveTo(mouth.pt1X, mouth.pt1Y, mouth.pt2X, mouth.pt2Y, mouth.endX, mouth.endY);
+    context.stroke();
     context.restore();
 
 

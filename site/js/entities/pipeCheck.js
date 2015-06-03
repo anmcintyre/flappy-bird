@@ -26,16 +26,13 @@ PipeCheck.prototype.clearOnRestart = function(entity){
 }
 
 PipeCheck.prototype.onCollision = function(entity){
-  console.log("PipeCheck collided with entity:", entity);
-
   //Remove self
   var i=this.components.entities.length; 
   while ( i--){
     if (this.components.entities[i] == this)
       this.components.entities.splice(i, 1);
   }
-  console.log("Remove Pipecheck");
-  $("#counter").text(++this.components.app.successfulPipeCount);
+  this.components.app.scoreboard.increment();  
 }
 
 

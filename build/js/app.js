@@ -290,7 +290,23 @@ PipeGraphicsComponent.prototype.draw = function(context){
     context.closePath();
     context.fill();
 
+    //mouth
+    var mouth = {
+        startX : size.x + (1/3)*size.width,
+        startY : size.y + (1/4)*size.height,
+        pt1X : size.x + 4/9 * size.width,
+        pt1Y : size.y,
+        pt2X : size.x + 5/9 * size.width,
+        pt2Y : size.y,
+        endX : size.x + (2/3)*size.width,
+        endY : size.y + (1/4)*size.height,
+    }
 
+    context.strokeStyle = "black";
+    context.beginPath();
+    context.moveTo(mouth.startX, mouth.startY);
+    context.bezierCurveTo(mouth.pt1X, mouth.pt1Y, mouth.pt2X, mouth.pt2Y, mouth.endX, mouth.endY);
+    context.stroke();
     context.restore();
 
 
@@ -451,16 +467,13 @@ PipeCheck.prototype.clearOnRestart = function(entity){
 }
 
 PipeCheck.prototype.onCollision = function(entity){
-  console.log("PipeCheck collided with entity:", entity);
-
   //Remove self
   var i=this.components.entities.length; 
   while ( i--){
     if (this.components.entities[i] == this)
       this.components.entities.splice(i, 1);
   }
-  console.log("Remove Pipecheck");
-  $("#counter").text(++this.components.app.successfulPipeCount);
+  this.components.app.scoreboard.increment();  
 }
 
 
@@ -542,6 +555,8 @@ exports.Wall = Wall;
 var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
+var uiSystem = require('./systems/ui');
+var scoreBoardSystem = require('./systems/scoreboard');
 
 var bird = require('./entities/bird');
 var pipe = require('./entities/pipe');
@@ -561,32 +576,32 @@ var FlappyBird = function() {
     this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
     this.physics = new physicsSystem.PhysicsSystem(this.entities);
     this.input = new inputSystem.InputSystem(this.entities);
+    this.ui = new uiSystem.UISystem();
+    this.scoreboard = new scoreBoardSystem.ScoreBoardSystem();
+
     this.timeToNextPipe = 2000;
-    this.successfulPipeCount = 0;
+
 };
 
 FlappyBird.prototype.run = function(event) {
     this.physics.run();
     this.input.run();
+    this.scoreboard.successfulPipeCount = 0;
     this.gapSize = Number($("input[name=gapSize]:checked").val());
     this.timeoutID = setTimeout(this.addPipes.bind(this), this.timeToNextPipe);  
-    $("#aboutToStartDiv").hide();         
-    $("#countDiv").show();
-    this.successfulPipeCount = 0;
-    $("#counter").text("0");
+    this.ui.start();
 };
 
 FlappyBird.prototype.stop = function(){
     this.input.stop(this);
     this.physics.stop();
     clearTimeout(this.timeoutID);
-    $("#aboutToStartDiv").show();
-    $("#countDiv").hide();
+    this.ui.stop();
 };
 
 FlappyBird.prototype.addPipes = function(){
     var maxY = 0.40;
-    var minY = 0.10;
+    var minY = 0.20;
     var gapPosition = Math.random() * (maxY-minY) + minY;
     var bottomSize = {
         x: 0,
@@ -624,7 +639,7 @@ FlappyBird.prototype.restart = function(birdEntity){
     this.stop();
 };
 exports.FlappyBird = FlappyBird;
-},{"./entities/bird":7,"./entities/pipe":8,"./entities/pipeCheck":9,"./entities/starField":10,"./entities/wall":11,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16}],13:[function(require,module,exports){
+},{"./entities/bird":7,"./entities/pipe":8,"./entities/pipeCheck":9,"./entities/starField":10,"./entities/wall":11,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16,"./systems/scoreboard":17,"./systems/ui":18}],13:[function(require,module,exports){
 var CollisionSystem = function(entities) {
     this.entities = entities;
 };
@@ -766,6 +781,48 @@ PhysicsSystem.prototype.tick = function() {
 
 exports.PhysicsSystem = PhysicsSystem;
 },{"./collision":13}],17:[function(require,module,exports){
+var ScoreBoardSystem = function() {
+    this.successfulPipeCount = 0;
+};
+
+ScoreBoardSystem.prototype.save = function() {
+	//Show graphic to take in name
+    //Store the score
+};
+
+ScoreBoardSystem.prototype.display = function() {	
+    //View the scoreboard
+};
+
+ScoreBoardSystem.prototype.increment = function(){
+	$("#counter").text(++this.successfulPipeCount);
+}
+
+exports.ScoreBoardSystem = ScoreBoardSystem;
+},{}],18:[function(require,module,exports){
+var UISystem = function(entities) {
+    this.entities = entities;
+
+    // Canvas is where we get input from
+    this.canvas = document.getElementById('main-canvas');
+};
+
+
+UISystem.prototype.start = function() {	
+    $("#aboutToStartDiv").hide();         
+    $("#countDiv").show();
+    $("#counter").text("0");    
+};
+
+UISystem.prototype.stop = function(){
+    $("#aboutToStartDiv").show();
+    $("#lastScore").text("You successfully passed " + $("#countDiv").text() + " pairs of aliens!");
+    $("#clickToStart").text("Click the mouse button to play again.");
+    $("#countDiv").hide();	
+}
+
+exports.UISystem = UISystem;
+},{}],19:[function(require,module,exports){
 
 var flappyBird = require('./flappy_bird');
 
@@ -788,4 +845,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-},{"./flappy_bird":12}]},{},[17]);
+},{"./flappy_bird":12}]},{},[19]);
