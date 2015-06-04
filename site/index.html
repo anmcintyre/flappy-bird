@@ -12,9 +12,7 @@
 <body>
 	<nav>
 	    <ul>
-	        <li><a href="#">Home</a></li>
-	        <li><a href="#">About</a></li>
-	        <li><a href="#">Leaderboard</a></li>
+	        <li><a href="javascript: $('#scoreBoard').show();">Show Leaderboard</a></li>
 	    </ul>
 	</nav>
 	<header>
@@ -25,7 +23,7 @@
 		<canvas id="main-canvas"></canvas>
 		<div id="overlay" unselectable="on">
 			<div id="startDiv">
-				<h3>Difficulty</h3>
+				<h2>Difficulty</h2>
 				<span>
 					<input type="radio" name="gapSize" value="0.35"/><label for="easy">Easy</label><br />
 					<input type="radio" name="gapSize" value="0.25"/><label for="easy">Medium</label><br />
@@ -35,19 +33,32 @@
 			</div>
 			<div id="aboutToStartDiv">
 				<h2 id="lastScore"></h2>
+				<div id="newHighScoreDiv">
+					<h2>New High Score!</h2>
+					You successfully passed <span id="newHighScoreCount"></span> pairs of aliens!<br /><br />
+					Please enter your name: <input type="text" pattern="[A-Za-z]{1,20}" id="highScoreName" title="10 letter alphabetic characters only"/>
+					<button id="saveHighScoreButton">Save</button>
+				</div>
 				<h2 id="clickToStart">Click the mouse button to start</h2>				
 			</div>
 			<div id="countDiv">
 				<h1 id="counter">0</h1>
 			</div>
 		</div>
+		<div id="scoreBoard">
+			<div id="scoresDiv">
+				<h3>High Scores from this computer</h3>
+				<table>
+					<thead>
+						<tr><th>Position</th><th>Name</th><th>Score</th></tr>
+					</thead>
+					<tbody id="scoresTableBody"></tbody>
+				</table>
+				<button id="closeButton">Close</button>
+			</div>
+		</div>
 	</section>
 	<footer>        
-	    <ul class="icons">
-	        <li><i class="fa fa-twitter twitter"></i></li>
-	        <li><i class="fa fa-facebook facebook"></i></li>
-	        <li><i class="fa fa-instagram instagram"></i></li>
-	    </ul>
 	    <p>Based on .Gears App "Flappy Bird"</p>
 	</footer>	
 </body>

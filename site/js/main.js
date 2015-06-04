@@ -18,4 +18,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });    
     });
+
+    $("#closeButton").click(function(){
+        $("#scoreBoard").hide();
+    });
+
+
+    $("#saveHighScoreButton").click(function(){
+        app.scoreboard.addNewScore($("#highScoreName").val());
+        $("#clickToStart").show();   
+        $("#newHighScoreDiv").hide();
+        $("div#overlay").bind("click.start", function(event){
+            if (event.target.id != "saveHighScoreButton"){
+                app.run(); 
+            }
+        });          
+    });
+
 });

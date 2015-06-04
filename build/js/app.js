@@ -376,7 +376,7 @@ var Bird = function(app){
 	console.log("creating Bird entity");
     var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.y = 0.5;
-    physics.acceleration.y = -2;
+    physics.acceleration.y = -1.7;
     this.type = "Bird";
 
 	var graphics = new graphicsComponent.BirdGraphicsComponent(this);
@@ -593,10 +593,12 @@ FlappyBird.prototype.run = function(event) {
 };
 
 FlappyBird.prototype.stop = function(){
+    this.timeToNextPipe = 2000;
     this.input.stop(this);
     this.physics.stop();
     clearTimeout(this.timeoutID);
     this.ui.stop();
+    this.scoreboard.save(this.ui);
 };
 
 FlappyBird.prototype.addPipes = function(){
@@ -783,22 +785,75 @@ exports.PhysicsSystem = PhysicsSystem;
 },{"./collision":13}],17:[function(require,module,exports){
 var ScoreBoardSystem = function() {
     this.successfulPipeCount = 0;
+    this.minToReachScoreboard = 0;
+    this.maxNumOfScores = 10;
+    this.scores = [];
+    if (localStorage.getItem("scores") !== null){
+        this.scores = JSON.parse(localStorage.getItem("scores"));
+        if (this.scores.length == this.maxNumOfScores)
+            this.minToReachScoreboard = Number(this.scores[this.scores.length-1].value);
+    }
+    this.updateGUI();
 };
 
-ScoreBoardSystem.prototype.save = function() {
+ScoreBoardSystem.prototype.save = function(ui) {
 	//Show graphic to take in name
-    //Store the score
+    if (this.successfulPipeCount > this.minToReachScoreboard){
+        ui.newHighScore(this.successfulPipeCount);
+    } else {
+        ui.showScore(this.successfulPipeCount);
+    }
 };
 
-ScoreBoardSystem.prototype.display = function() {	
-    //View the scoreboard
-};
+ScoreBoardSystem.prototype.addNewScore = function(name){
+    if (this.scores.length == this.maxNumOfScores){
+        this.scores.pop();
+    }
+   
+    this.scores.push({name: name, value: this.successfulPipeCount})
+    this.scores.sort(function(a, b){
+        if (Number(a.value) > Number(b.value)){
+            return 1;
+        } 
+        if (Number(a.value) < Number(b.value)){ 
+            return -1;
+        }         
+        return 0;   
+    });         
+    if (this.scores.length == this.maxNumOfScores){
+        this.minToReachScoreboard = Number(this.scores[this.scores.length-1].value);
+    }
+    localStorage.setItem("scores", JSON.stringify(this.scores)); 
+    this.updateGUI();     
+}
+
 
 ScoreBoardSystem.prototype.increment = function(){
 	$("#counter").text(++this.successfulPipeCount);
+};
+
+ScoreBoardSystem.prototype.updateGUI = function(){
+    $("#scoresTableBody").empty();
+    var position=1;
+    for (var i=this.scores.length-1; i >= 0; i--){
+        $("#scoresTableBody")
+            .append($("<tr>")
+                .append($("<td class='numberTD'>")
+                    .text(position)
+                )
+                .append($("<td>")
+                    .text(this.scores[i].name)
+                )
+                .append($("<td class='numberTD'>")
+                    .text(this.scores[i].value)
+                )
+            );
+        position++;
+    }
 }
 
 exports.ScoreBoardSystem = ScoreBoardSystem;
+
 },{}],18:[function(require,module,exports){
 var UISystem = function(entities) {
     this.entities = entities;
@@ -816,9 +871,22 @@ UISystem.prototype.start = function() {
 
 UISystem.prototype.stop = function(){
     $("#aboutToStartDiv").show();
-    $("#lastScore").text("You successfully passed " + $("#countDiv").text() + " pairs of aliens!");
     $("#clickToStart").text("Click the mouse button to play again.");
     $("#countDiv").hide();	
+}
+
+UISystem.prototype.showScore = function(newScore){
+	$("#lastScore").show();
+	$("#newHighScoreDiv").hide()
+	$("#lastScore").text("You successfully passed " + newScore + " pairs of aliens!");
+}
+
+UISystem.prototype.newHighScore = function(newScore){
+	$("div#overlay").unbind("click.start");
+	$("#clickToStart").hide();
+	$("#lastScore").hide();
+	$("#newHighScoreDiv").show();
+	$("#newHighScoreCount").text(newScore);
 }
 
 exports.UISystem = UISystem;
@@ -843,6 +911,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });    
     });
+
+    $("#closeButton").click(function(){
+        $("#scoreBoard").hide();
+    });
+
+
+    $("#saveHighScoreButton").click(function(){
+        app.scoreboard.addNewScore($("#highScoreName").val());
+        $("#clickToStart").show();   
+        $("#newHighScoreDiv").hide();
+        $("div#overlay").bind("click.start", function(event){
+            if (event.target.id != "saveHighScoreButton"){
+                app.run(); 
+            }
+        });          
+    });
+
 });
 
 },{"./flappy_bird":12}]},{},[19]);

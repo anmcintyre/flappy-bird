@@ -3,6 +3,7 @@ $background-color: lighten(#DCF7E8, 5);
 $dark-background-color: darken(#71C5CF, 25);
 $nav-color: lighten(#EBFCDC, 10);
 $sans-serif-font: 'Ubuntu', sans-serif;
+$scoreboard-color: darken(#71C5CF, 35);
 
 * {
    -ms-user-select: none; /* IE 10+ */
@@ -76,21 +77,28 @@ div#overlay{
 }
 
 div#aboutToStartDiv{
-    width: 25em;
+    width: 30em;
     margin: 10em auto;
     display: none;
     text-align: center;
 }
 
+div#newHighScoreDiv, div#lastScore{
+    display: none;
+}
+
 div#startDiv{
     width: 6em;
-    margin: 0 auto;  
+    margin: 50px auto 0;  
     input{
         margin-bottom: 10px;
     }   
     button{
         margin-top: 10px;
     }
+    label{
+        font-weight: bold;
+    }    
 }
 
 div#countDiv{
@@ -100,6 +108,40 @@ div#countDiv{
     text-align: center;
     border: 3px solid;
     background-color: rgba(16, 84, 94, 0.5);
+}
+
+div#scoreBoard{
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    display: none;
+    z-index: 1;
+
+    div{
+        left: -50%;
+        padding: 10px;
+        background-color: $background-color;
+        border: 3px solid $scoreboard-color;
+        position: relative;
+    }
+
+    table{
+        margin: 0 auto;        
+    }
+
+    td, th{
+        padding: 5px 20px 5px 0px;
+        text-align: left;
+    }
+
+    .numberTD{
+        text-align: right;
+    }
+
+    button{
+        margin-left: 8em;
+        margin-top: 15px;
+    }
 }
 
 footer{

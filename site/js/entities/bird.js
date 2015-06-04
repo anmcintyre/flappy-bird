@@ -6,7 +6,7 @@ var Bird = function(app){
 	console.log("creating Bird entity");
     var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.y = 0.5;
-    physics.acceleration.y = -2;
+    physics.acceleration.y = -1.7;
     this.type = "Bird";
 
 	var graphics = new graphicsComponent.BirdGraphicsComponent(this);

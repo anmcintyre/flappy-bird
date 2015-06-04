@@ -39,10 +39,12 @@ FlappyBird.prototype.run = function(event) {
 };
 
 FlappyBird.prototype.stop = function(){
+    this.timeToNextPipe = 2000;
     this.input.stop(this);
     this.physics.stop();
     clearTimeout(this.timeoutID);
     this.ui.stop();
+    this.scoreboard.save(this.ui);
 };
 
 FlappyBird.prototype.addPipes = function(){
